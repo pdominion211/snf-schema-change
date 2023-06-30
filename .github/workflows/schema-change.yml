@@ -16,11 +16,12 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
+	  packages:
+            - snowflake-connector-python
+            - name: Install schemachange
+              run: pip install schemachange
 
-      - name: Install schemachange
-        run: pip install schemachange
-
-      - name: Run schemachange
+            - name: Run schemachange
 	env:
           SF_ACCOUNT: ${{secrets.SF_ACCOUNT}}
           SF_USERNAME: ${{secrets.SF_USERNAME}}
@@ -32,7 +33,10 @@ jobs:
          
            echo "SNOWFLAKE_ENV=dev" >> $GITHUB_ENV
            if [[ $GITHUB_REF == refs/heads/main ]]; then
-            echo "SNOWFLAKE_ENV=prod" >> $GITHUB_ENV
+	   echo "Deploying to production..."
+
+	   echo "Skipping production deployment..."
+            
            fi 
            - name: Deploy to Snowflake
             run: |
